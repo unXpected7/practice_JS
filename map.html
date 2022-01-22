@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <button onclick="Geolocation()" class="btn-absen">Absen</button>
+        <p class="location"></p>
+        <div id="map">
+        </div>
+    </div>
+    <script
+        async
+        defer
+        src="https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyC2G4hNLJKPXAhRPQT_cPWi0UocnzJxKpM&callback=init">
+
+        const userLocation = document.getElementById("location");
+        var geocoder, map, latlng;
+        function init() {
+            navigator.geolocation.getCurrentPosition(gMaps);
+        }
+        function gMaps(position){
+            geocoder = new google.maps.Geocoder();
+            Lating = new google.maps.LatLng( position.coords.latitude, position.coords.Longitude );
+        
+        //create map
+        const map0pts = { center: latlng, zoom: 1};
+        map = new google.maps.Map( document.getElementById( 'map'), map0pts);
+        //marker
+        let marker = new google.maps.Marker({ position: latlng });
+        marker.setMap(map);
+        }
+        function getlocation() {
+            geocoder.geocode( { latLng: latIng }, function(results, status) {
+                userLocation.innerHTHL = results[0].formatted_address
+        });
+        }
+    </script>
+</body>
+</html>
