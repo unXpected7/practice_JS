@@ -1,44 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+  </head>
+  <body>
     <div class="container">
-        <button onclick="Geolocation()" class="btn-absen">Absen</button>
-        <p class="location"></p>
-        <div id="map">
-        </div>
+      <button onclick="getLocation()" class="btn-absen">Absen</button>
+      <div id="map"></div>
+      <p id="text"></p>
     </div>
-    <script
-        async
-        defer
-        src="https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyC2G4hNLJKPXAhRPQT_cPWi0UocnzJxKpM&callback=init">
+    <script lang="ts">
+      const map = document.getElementById("map");
+      const text = document.getElementById("text");
 
-        const userLocation = document.getElementById("location");
-        var geocoder, map, latlng;
-        function init() {
-            navigator.geolocation.getCurrentPosition(gMaps);
+      const sekolah = {
+        lat: -6.9774,
+        lng: 109.1347,
+      }; //sma 3 slawi
+
+      const embedMap = (lat, long) => {
+        const iframe = `<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31681.663069763024!2d${long}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef9f20859e3%3A0x4027a76e352f800!2sSlawi%2C%20Tegal%20Regency%2C%20Central%20Java!5e0!3m2!1sen!2sid!4v1642821597657!5m2!1sen!2sid" width="800" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`;
+        map.innerHTML = iframe;
+      };
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const long = position.coords.longitude;
+            embedMap(lat, long);
+            var line = turf.lineString([
+              [long, lat],
+              [sekolah.lng, sekolah.lat],
+            ]);
+            var distance = turf.length(line, { units: "kilometers" });
+            text.innerHTML = `Jarak anda dengan sekolah ${distance} km`;
+          });
+        } else {
+          map.innerHTML = "Geolocation is not supported by this browser.";
         }
-        function gMaps(position){
-            geocoder = new google.maps.Geocoder();
-            Lating = new google.maps.LatLng( position.coords.latitude, position.coords.Longitude );
-        
-        //create map
-        const map0pts = { center: latlng, zoom: 1};
-        map = new google.maps.Map( document.getElementById( 'map'), map0pts);
-        //marker
-        let marker = new google.maps.Marker({ position: latlng });
-        marker.setMap(map);
-        }
-        function getlocation() {
-            geocoder.geocode( { latLng: latIng }, function(results, status) {
-                userLocation.innerHTHL = results[0].formatted_address
-        });
-        }
+      }
     </script>
-</body>
+  </body>
 </html>
